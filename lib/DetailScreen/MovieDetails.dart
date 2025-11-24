@@ -10,7 +10,7 @@ import '../RepeatedFunction/repttext.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:r08fullmovieapp/Recommendation/recommender.dart';
-import '../RepeatedFunction/reviewui.dart';
+//import '../RepeatedFunction/reviewui.dart';
 
 class MovieDetails extends StatefulWidget {
   var id;
@@ -32,8 +32,8 @@ class _MovieDetailsState extends State<MovieDetails> {
     //using apikey/apikey.dart file to get api key
     var moviedetailurl =
         'https://api.themoviedb.org/3/movie/${widget.id}?api_key=${api_key}';
-    var UserReviewurl =
-        'https://api.themoviedb.org/3/movie/${widget.id}/reviews?api_key=${api_key}';
+    // var UserReviewurl =
+    // 'https://api.themoviedb.org/3/movie/${widget.id}/reviews?api_key=${api_key}';
     var similarmoviesurl =
         'https://api.themoviedb.org/3/movie/${widget.id}/similar?api_key=${api_key}';
     //var recommendedmoviesurl =
@@ -61,32 +61,6 @@ class _MovieDetailsState extends State<MovieDetails> {
       }
     } else {}
 
-    /////////////////////////////User Reviews///////////////////////////////
-    var UserReviewresponse = await http.get(Uri.parse(UserReviewurl));
-    if (UserReviewresponse.statusCode == 200) {
-      var UserReviewjson = jsonDecode(UserReviewresponse.body);
-      for (var i = 0; i < UserReviewjson['results'].length; i++) {
-        UserREviews.add({
-          "name": UserReviewjson['results'][i]['author'],
-          "review": UserReviewjson['results'][i]['content'],
-          //check rating is null or not
-          "rating":
-              UserReviewjson['results'][i]['author_details']['rating'] == null
-                  ? "Not Rated"
-                  : UserReviewjson['results'][i]['author_details']['rating']
-                      .toString(),
-          "avatarphoto": UserReviewjson['results'][i]['author_details']
-                      ['avatar_path'] ==
-                  null
-              ? "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
-              : "https://image.tmdb.org/t/p/w500" +
-                  UserReviewjson['results'][i]['author_details']['avatar_path'],
-          "creationdate":
-              UserReviewjson['results'][i]['created_at'].substring(0, 10),
-          "fullreviewurl": UserReviewjson['results'][i]['url'],
-        });
-      }
-    } else {}
     /////////////////////////////similar movies
     var similarmoviesresponse = await http.get(Uri.parse(similarmoviesurl));
     if (similarmoviesresponse.statusCode == 200) {
@@ -101,7 +75,7 @@ class _MovieDetailsState extends State<MovieDetails> {
         });
       }
     } else {}
-    // print(similarmovieslist);
+
     /////////////////////////////recommended movies (from precomputed JSON + TMDB metadata)
     // Load recommender asset (mapping movieId -> [recommendedIds]) and fetch metadata
     try {
@@ -281,10 +255,10 @@ class _MovieDetailsState extends State<MovieDetails> {
                           child: overviewtext(
                               movieDetails[0]['overview'].toString())),
 
-                      Padding(
-                        padding: EdgeInsets.only(left: 20, top: 10),
-                        child: ReviewUI(revdeatils: UserREviews),
-                      ),
+                      // Padding(
+                      //   padding: EdgeInsets.only(left: 20, top: 10),
+                      //   child: ReviewUI(revdeatils: UserREviews),
+                      // ),
                       Padding(
                           padding: EdgeInsets.only(left: 20, top: 20),
                           child: normaltext(
@@ -297,13 +271,11 @@ class _MovieDetailsState extends State<MovieDetails> {
                           padding: EdgeInsets.only(left: 20, top: 20),
                           child: normaltext(
                               'Revenue : ${movieDetails[0]['revenue']}')),
-                      sliderlist(similarmovieslist, "Similar Movies", "movie",
-                          similarmovieslist.length),
+
                       sliderlist(recommendedmovieslist, "Recommended Movies",
                           "movie", recommendedmovieslist.length),
-                      // Container(
-                      //     height: 50,
-                      //     child: Center(child: normaltext("By Niranjan Dahal")))
+                      sliderlist(similarmovieslist, "Similar Movies", "movie",
+                          similarmovieslist.length),
                     ]))
                   ]);
             } else {

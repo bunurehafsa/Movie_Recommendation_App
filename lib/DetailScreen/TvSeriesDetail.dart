@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:r08fullmovieapp/RepeatedFunction/reviewui.dart';
+//import 'package:r08fullmovieapp/RepeatedFunction/reviewui.dart';
 import 'package:r08fullmovieapp/RepeatedFunction/sliderlist.dart';
 import '../HomePage/HomePage.dart';
 import '../RepeatedFunction/TrailerUI.dart';
@@ -33,18 +33,14 @@ class _TvSeriesDetailsState extends State<TvSeriesDetails> {
     //using apikey from api_key.dart file
     var tvseriesdetailurl =
         'https://api.themoviedb.org/3/tv/${widget.id}?api_key=${api_key}';
-    var tvseriesreviewurl =
-        'https://api.themoviedb.org/3/tv/${widget.id}/reviews?api_key=${api_key}';
+    //var tvseriesreviewurl =
+    //  'https://api.themoviedb.org/3/tv/${widget.id}/reviews?api_key=${api_key}';
     var similarseriesurl =
         'https://api.themoviedb.org/3/tv/${widget.id}/similar?api_key=${api_key}';
     var recommendseriesurl =
         'https://api.themoviedb.org/3/tv/${widget.id}/recommendations?api_key=${api_key}';
     var seriestrailersurl =
         'https://api.themoviedb.org/3/tv/${widget.id}/videos?api_key=${api_key}';
-
-    // 'https://api.themoviedb.org/3/tv/' +
-    //     widget.id.toString() +
-    //     '/videos?api_key=$apikey';
 
     var tvseriesdetailresponse = await http.get(Uri.parse(tvseriesdetailurl));
     if (tvseriesdetailresponse.statusCode == 200) {
@@ -77,34 +73,7 @@ class _TvSeriesDetailsState extends State<TvSeriesDetails> {
         });
       }
     } else {}
-    ///////////////////////////////////////////tvseries review///////////////////////////////////////////
 
-    var tvseriesreviewresponse = await http.get(Uri.parse(tvseriesreviewurl));
-    if (tvseriesreviewresponse.statusCode == 200) {
-      var tvseriesreviewdata = jsonDecode(tvseriesreviewresponse.body);
-      for (var i = 0; i < tvseriesreviewdata['results'].length; i++) {
-        TvSeriesREview.add({
-          'name': tvseriesreviewdata['results'][i]['author'],
-          'review': tvseriesreviewdata['results'][i]['content'],
-          "rating": tvseriesreviewdata['results'][i]['author_details']
-                      ['rating'] ==
-                  null
-              ? "Not Rated"
-              : tvseriesreviewdata['results'][i]['author_details']['rating']
-                  .toString(),
-          "avatarphoto": tvseriesreviewdata['results'][i]['author_details']
-                      ['avatar_path'] ==
-                  null
-              ? "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
-              : "https://image.tmdb.org/t/p/w500" +
-                  tvseriesreviewdata['results'][i]['author_details']
-                      ['avatar_path'],
-          "creationdate":
-              tvseriesreviewdata['results'][i]['created_at'].substring(0, 10),
-          "fullreviewurl": tvseriesreviewdata['results'][i]['url'],
-        });
-      }
-    } else {}
     ///////////////////////////////////////////similar series
 
     var similarseriesresponse = await http.get(Uri.parse(similarseriesurl));
@@ -140,7 +109,7 @@ class _TvSeriesDetailsState extends State<TvSeriesDetails> {
     var tvseriestrailerresponse = await http.get(Uri.parse(seriestrailersurl));
     if (tvseriestrailerresponse.statusCode == 200) {
       var tvseriestrailerdata = jsonDecode(tvseriestrailerresponse.body);
-      // print(tvseriestrailerdata);
+      //print(tvseriestrailerdata);
       for (var i = 0; i < tvseriestrailerdata['results'].length; i++) {
         //add only if type is trailer
         if (tvseriestrailerdata['results'][i]['type'] == "Trailer") {
@@ -262,10 +231,10 @@ class _TvSeriesDetailsState extends State<TvSeriesDetails> {
                           padding: EdgeInsets.only(left: 10, top: 20),
                           child: overviewtext(
                               TvSeriesDetails[0]['overview'].toString())),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20.0, top: 10),
-                        child: ReviewUI(revdeatils: TvSeriesREview),
-                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(left: 20.0, top: 10),
+                      //   child: ReviewUI(revdeatils: TvSeriesREview),
+                      // ),
                       Container(
                           padding: EdgeInsets.only(left: 10, top: 20),
                           child: boldtext(
@@ -314,14 +283,11 @@ class _TvSeriesDetailsState extends State<TvSeriesDetails> {
                           padding: EdgeInsets.only(left: 10, top: 20),
                           child: normaltext(
                               "Release date : ${TvSeriesDetails[0]['releasedate']}")),
-                      sliderlist(similarserieslist, 'Similar Series', 'tv',
-                          similarserieslist.length),
+
                       sliderlist(recommendserieslist, 'Recommended Series',
                           'tv', recommendserieslist.length),
-                      Container(
-                          //     height: 50,
-                          //     child: Center(child: normaltext("By Niranjan Dahal"))
-                          )
+                      sliderlist(similarserieslist, 'Similar Series', 'tv',
+                          similarserieslist.length),
                     ]))
                   ]);
             } else {

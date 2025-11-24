@@ -10,7 +10,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class addtofavoriate extends StatefulWidget {
   var id, type, Details;
-  addtofavoriate({super.key, 
+  addtofavoriate({
+    super.key,
     this.id,
     this.type,
     this.Details,
@@ -143,7 +144,7 @@ class _addtofavoriateState extends State<addtofavoriate> {
                     return AlertDialog(
                       backgroundColor: Color.fromRGBO(18, 18, 18, 1),
                       title: normaltext(
-                        "Movie Hunt By Niranjan",
+                        "MovieLens By Shefa",
                       ),
                       content: SizedBox(
                         height: 180,
@@ -214,24 +215,6 @@ class _addtofavoriateState extends State<addtofavoriate> {
                                   GestureDetector(
                                     onTap: () async {
                                       var url =
-                                          "https://www.linkedin.com/shareArticle?mini=true&url=https://www.themoviedb.org/$widget.type/$widget.id&title=Movie Hunt&summary=Check%20out%20this%20link:%20https://www.themoviedb.org/$widget.type/$widget.id&source=Movie%20Hunt";
-                                      await launch(url);
-                                    },
-                                    child: Container(
-                                        padding: EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                            color: Colors.blue,
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        child: Row(children: [
-                                          Icon(FontAwesomeIcons.linkedin,
-                                              color: Colors.white, size: 30),
-                                        ])),
-                                  ),
-                                  SizedBox(width: 10),
-                                  GestureDetector(
-                                    onTap: () async {
-                                      var url =
                                           "https://twitter.com/intent/tweet?text=Check%20out%20this%20link:%20https://www.themoviedb.org/$widget.type/$widget.id";
                                       await launch(url);
                                     },
@@ -257,7 +240,7 @@ class _addtofavoriateState extends State<addtofavoriate> {
                                     text:
                                         "https://www.themoviedb.org/$widget.type/$widget.id"));
                                 Navigator.pop(context);
-                                //slutter toast for the message copied to clipboard
+
                                 Fluttertoast.showToast(
                                     msg: "Link Copied to Clipboard",
                                     toastLength: Toast.LENGTH_SHORT,
