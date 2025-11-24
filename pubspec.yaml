@@ -64,6 +64,7 @@ flutter:
     - assets/icon.png
     - assets/user.png
     - assets/.env
+    - assets/recommendations.json
     # - .env
   # assets:
   #   - images/a_dot_burr.jpeg

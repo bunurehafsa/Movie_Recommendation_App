@@ -24,7 +24,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   // String? apikey = dotenv.env['apikey'];
-  String? apikey = api_key; // Assuming you have a file named apikey.dart with
+  String? apikey = api_key;
   List<Map<String, dynamic>> trendingweek = [];
   int uval = 1;
   Future<void> trendinglist(int checkerno) async {
@@ -269,7 +269,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   },
                 ),
               )),
-          //////////////////////////////////////////////End of Flexible bar///////////////////////////////////////////////////////////////
+          ///////////////////////////End of Flexible bar/////////////////////
           SliverList(
               delegate: SliverChildListDelegate([
             Container(

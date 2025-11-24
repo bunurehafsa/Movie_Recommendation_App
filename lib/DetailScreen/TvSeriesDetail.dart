@@ -30,18 +30,6 @@ class _TvSeriesDetailsState extends State<TvSeriesDetails> {
   List<Map<String, dynamic>> seriestrailerslist = [];
 
   Future<void> tvseriesdetailfunc() async {
-    // dotenv.load(fileName: ".env");
-    // var tvseriesdetailurl =
-    //     'https://api.themoviedb.org/3/tv/${widget.id}?api_key=${dotenv.env['apikey']}';
-    // var tvseriesreviewurl =
-    //     'https://api.themoviedb.org/3/tv/${widget.id}/reviews?api_key=${dotenv.env['apikey']}';
-    // var similarseriesurl =
-    //     'https://api.themoviedb.org/3/tv/${widget.id}/similar?api_key=${dotenv.env['apikey']}';
-    // var recommendseriesurl =
-    //     'https://api.themoviedb.org/3/tv/${widget.id}/recommendations?api_key=${dotenv.env['apikey']}';
-    // var seriestrailersurl =
-    //     'https://api.themoviedb.org/3/tv/${widget.id}/videos?api_key=${dotenv.env['apikey']}';
-
     //using apikey from api_key.dart file
     var tvseriesdetailurl =
         'https://api.themoviedb.org/3/tv/${widget.id}?api_key=${api_key}';

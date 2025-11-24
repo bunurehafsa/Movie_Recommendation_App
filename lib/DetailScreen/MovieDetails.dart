@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:r08fullmovieapp/RepeatedFunction/sliderlist.dart';
 import 'package:r08fullmovieapp/apikey/apikey.dart';
-// import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:r08fullmovieapp/HomePage/HomePage.dart';
@@ -10,7 +9,7 @@ import '../RepeatedFunction/favoriateandshare.dart';
 import '../RepeatedFunction/repttext.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:r08fullmovieapp/Recommendation/recommender.dart';
 import '../RepeatedFunction/reviewui.dart';
 
 class MovieDetails extends StatefulWidget {
@@ -21,7 +20,7 @@ class MovieDetails extends StatefulWidget {
 }
 
 class _MovieDetailsState extends State<MovieDetails> {
-  List<Map<String, dynamic>> MovieDetails = [];
+  List<Map<String, dynamic>> movieDetails = [];
   List<Map<String, dynamic>> UserREviews = [];
   List<Map<String, dynamic>> similarmovieslist = [];
   List<Map<String, dynamic>> recommendedmovieslist = [];
@@ -29,16 +28,7 @@ class _MovieDetailsState extends State<MovieDetails> {
 
   List MoviesGeneres = [];
 
-  Future Moviedetails() async {
-//
-//using flutter_dotenv package to load environment variables from .env file
-
-    // var moviedetailurl = 'https://api.themoviedb.org/3/movie/${widget.id}?api_key=${dotenv.env['apikey']}';
-    // var UserReviewurl = 'https://api.themoviedb.org/3/movie/${widget.id}/reviews?api_key=${dotenv.env['apikey']}';
-    // var similarmoviesurl = 'https://api.themoviedb.org/3/movie/${widget.id}/similar?api_key=${dotenv.env['apikey']}';
-    // var recommendedmoviesurl = 'https://api.themoviedb.org/3/movie/${widget.id}/recommendations?api_key=${dotenv.env['apikey']}';
-    // var movietrailersurl = 'https://api.themoviedb.org/3/movie/${widget.id}/videos?api_key=${dotenv.env['apikey']}';
-
+  Future<void> fetchMovieDetails() async {
     //using apikey/apikey.dart file to get api key
     var moviedetailurl =
         'https://api.themoviedb.org/3/movie/${widget.id}?api_key=${api_key}';
@@ -46,8 +36,8 @@ class _MovieDetailsState extends State<MovieDetails> {
         'https://api.themoviedb.org/3/movie/${widget.id}/reviews?api_key=${api_key}';
     var similarmoviesurl =
         'https://api.themoviedb.org/3/movie/${widget.id}/similar?api_key=${api_key}';
-    var recommendedmoviesurl =
-        'https://api.themoviedb.org/3/movie/${widget.id}/recommendations?api_key=${api_key}';
+    //var recommendedmoviesurl =
+    // 'https://api.themoviedb.org/3/movie/${widget.id}/recommendations?api_key=${api_key}';
     var movietrailersurl =
         'https://api.themoviedb.org/3/movie/${widget.id}/videos?api_key=${api_key}';
 
@@ -55,7 +45,7 @@ class _MovieDetailsState extends State<MovieDetails> {
     if (moviedetailresponse.statusCode == 200) {
       var moviedetailjson = jsonDecode(moviedetailresponse.body);
       for (var i = 0; i < 1; i++) {
-        MovieDetails.add({
+        movieDetails.add({
           "backdrop_path": moviedetailjson['backdrop_path'],
           "title": moviedetailjson['title'],
           "vote_average": moviedetailjson['vote_average'],
@@ -112,22 +102,35 @@ class _MovieDetailsState extends State<MovieDetails> {
       }
     } else {}
     // print(similarmovieslist);
-    /////////////////////////////recommended movies
-    var recommendedmoviesresponse =
-        await http.get(Uri.parse(recommendedmoviesurl));
-    if (recommendedmoviesresponse.statusCode == 200) {
-      var recommendedmoviesjson = jsonDecode(recommendedmoviesresponse.body);
-      for (var i = 0; i < recommendedmoviesjson['results'].length; i++) {
-        recommendedmovieslist.add({
-          "poster_path": recommendedmoviesjson['results'][i]['poster_path'],
-          "name": recommendedmoviesjson['results'][i]['title'],
-          "vote_average": recommendedmoviesjson['results'][i]['vote_average'],
-          "Date": recommendedmoviesjson['results'][i]['release_date'],
-          "id": recommendedmoviesjson['results'][i]['id'],
-        });
+    /////////////////////////////recommended movies (from precomputed JSON + TMDB metadata)
+    // Load recommender asset (mapping movieId -> [recommendedIds]) and fetch metadata
+    try {
+      await Recommender.instance.loadFromAsset();
+      final recIds =
+          Recommender.instance.getRecommendationsFor(widget.id, max: 15);
+      if (recIds.isNotEmpty) {
+        // Fetch details in parallel for the recommended ids
+        final futures = recIds
+            .map((rid) => http.get(Uri.parse(
+                'https://api.themoviedb.org/3/movie/$rid?api_key=$api_key')))
+            .toList();
+        final responses = await Future.wait(futures);
+        for (var resp in responses) {
+          if (resp.statusCode == 200) {
+            final d = jsonDecode(resp.body);
+            recommendedmovieslist.add({
+              "poster_path": d['poster_path'],
+              "name": d['title'],
+              "vote_average": d['vote_average'],
+              "Date": d['release_date'],
+              "id": d['id'],
+            });
+          }
+        }
       }
-    } else {}
-    // print(recommendedmovieslist);
+    } catch (e) {
+      // If anything fails, leave recommendedmovieslist empty (or fall back to API)
+    }
     /////////////////////////////movie trailers
     var movietrailersresponse = await http.get(Uri.parse(movietrailersurl));
     if (movietrailersresponse.statusCode == 200) {
@@ -161,7 +164,7 @@ class _MovieDetailsState extends State<MovieDetails> {
     return Scaffold(
       backgroundColor: Color.fromRGBO(14, 14, 14, 1),
       body: FutureBuilder(
-          future: Moviedetails(),
+          future: fetchMovieDetails(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return CustomScrollView(
@@ -227,7 +230,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                       addtofavoriate(
                         id: widget.id,
                         type: 'movie',
-                        Details: MovieDetails,
+                        Details: movieDetails,
                       ),
 
                       Column(
@@ -265,7 +268,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                                       color: Color.fromRGBO(25, 25, 25, 1),
                                       borderRadius: BorderRadius.circular(10)),
                                   child: genrestext(
-                                      '${MovieDetails[0]['runtime']} min'))
+                                      '${movieDetails[0]['runtime']} min'))
                             ],
                           )
                         ],
@@ -276,7 +279,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                       Padding(
                           padding: EdgeInsets.only(left: 20, top: 10),
                           child: overviewtext(
-                              MovieDetails[0]['overview'].toString())),
+                              movieDetails[0]['overview'].toString())),
 
                       Padding(
                         padding: EdgeInsets.only(left: 20, top: 10),
@@ -285,15 +288,15 @@ class _MovieDetailsState extends State<MovieDetails> {
                       Padding(
                           padding: EdgeInsets.only(left: 20, top: 20),
                           child: normaltext(
-                              'Release Date : ${MovieDetails[0]['release_date']}')),
+                              'Release Date : ${movieDetails[0]['release_date']}')),
                       Padding(
                           padding: EdgeInsets.only(left: 20, top: 20),
                           child: normaltext(
-                              'Budget : ${MovieDetails[0]['budget']}')),
+                              'Budget : ${movieDetails[0]['budget']}')),
                       Padding(
                           padding: EdgeInsets.only(left: 20, top: 20),
                           child: normaltext(
-                              'Revenue : ${MovieDetails[0]['revenue']}')),
+                              'Revenue : ${movieDetails[0]['revenue']}')),
                       sliderlist(similarmovieslist, "Similar Movies", "movie",
                           similarmovieslist.length),
                       sliderlist(recommendedmovieslist, "Recommended Movies",
