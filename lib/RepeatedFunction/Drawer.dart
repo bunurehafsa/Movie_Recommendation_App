@@ -93,7 +93,7 @@ class _drawerfuncState extends State<drawerfunc> {
             }),
             listtilefunc('Favorite', Icons.favorite, ontap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => FavoriateMovies()));
+                  MaterialPageRoute(builder: (context) => FavoriteListPage()));
             }),
             listtilefunc('About', Icons.info, ontap: () {
               showDialog(

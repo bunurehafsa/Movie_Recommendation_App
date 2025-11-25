@@ -53,18 +53,18 @@ class ForcedMobileView extends StatelessWidget {
     if (screenWidth > mobileWidth || screenHeight > mobileHeight) {
       return Column(
         children: [
-          const Text(
-            'Zoom out browser to see full screen',
-            style: TextStyle(fontSize: 30, color: Colors.black),
-          ),
+          // const Text(
+          //   'Zoom out browser to see full screen',
+          //   style: TextStyle(fontSize: 30, color: Colors.black),
+          // ),
           const SizedBox(
             height: 10,
           ),
-          const Text(
-            'all features might not work in web',
-            style: TextStyle(fontSize: 30, color: Colors.black),
-          ),
-          const SizedBox(height: 60),
+          // const Text(
+          //   'all features might not work in web',
+          //   style: TextStyle(fontSize: 30, color: Colors.black),
+          // ),
+          // const SizedBox(height: 60),
           Center(
             child: Container(
               width: mobileWidth,
