@@ -15,7 +15,7 @@ class TvSeries extends StatefulWidget {
 class _TvSeriesState extends State<TvSeries> {
   List<Map<String, dynamic>> populartvseries = [];
   List<Map<String, dynamic>> topratedtvseries = [];
-  List<Map<String, dynamic>> onairtvseries = [];
+  // List<Map<String, dynamic>> onairtvseries = [];
 
   ///
   ///
@@ -38,8 +38,8 @@ class _TvSeriesState extends State<TvSeries> {
       'https://api.themoviedb.org/3/tv/popular?api_key=${api_key}';
   var topratedtvseriesurl =
       'https://api.themoviedb.org/3/tv/top_rated?api_key=${api_key}';
-  var onairtvseriesurl =
-      'https://api.themoviedb.org/3/tv/on_the_air?api_key=${api_key}';
+  // var onairtvseriesurl =
+  //'https://api.themoviedb.org/3/tv/on_the_air?api_key=${api_key}';
   Future<void> tvseriesfunction() async {
     /////////////////////////////////////////////
     var populartvresponse = await http.get(Uri.parse(populartvseriesurl));
@@ -78,22 +78,22 @@ class _TvSeriesState extends State<TvSeries> {
       print(topratedtvresponse.statusCode);
     }
     /////////////////////////////////////////////
-    var onairtvresponse = await http.get(Uri.parse(onairtvseriesurl));
-    if (onairtvresponse.statusCode == 200) {
-      var tempdata = jsonDecode(onairtvresponse.body);
-      var onairtvjson = tempdata['results'];
-      for (var i = 0; i < onairtvjson.length; i++) {
-        onairtvseries.add({
-          "name": onairtvjson[i]["name"],
-          "poster_path": onairtvjson[i]["poster_path"],
-          "vote_average": onairtvjson[i]["vote_average"],
-          "Date": onairtvjson[i]["first_air_date"],
-          "id": onairtvjson[i]["id"],
-        });
-      }
-    } else {
-      print(onairtvresponse.statusCode);
-    }
+    // var onairtvresponse = await http.get(Uri.parse(onairtvseriesurl));
+    // if (onairtvresponse.statusCode == 200) {
+    //   var tempdata = jsonDecode(onairtvresponse.body);
+    //   var onairtvjson = tempdata['results'];
+    //   for (var i = 0; i < onairtvjson.length; i++) {
+    //     onairtvseries.add({
+    //       "name": onairtvjson[i]["name"],
+    //       "poster_path": onairtvjson[i]["poster_path"],
+    //       "vote_average": onairtvjson[i]["vote_average"],
+    //       "Date": onairtvjson[i]["first_air_date"],
+    //       "id": onairtvjson[i]["id"],
+    //     });
+    //   }
+    // } else {
+    //   print(onairtvresponse.statusCode);
+    // }
     /////////////////////////////////////////////
   }
 
@@ -116,7 +116,7 @@ class _TvSeriesState extends State<TvSeries> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   sliderlist(populartvseries, "Popular Now", "tv", 20),
-                  sliderlist(onairtvseries, "On Air Now", "tv", 20),
+                  //  sliderlist(onairtvseries, "On Air Now", "tv", 20),
                   sliderlist(topratedtvseries, "Top Rated", "tv", 20)
                 ]);
           }

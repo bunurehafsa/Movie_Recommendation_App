@@ -93,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Trending' ' 🔥',
+                  Text('Trending',
                       style: TextStyle(
                           color: Colors.white.withOpacity(0.8), fontSize: 16)),
                   SizedBox(width: 10),

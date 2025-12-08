@@ -116,8 +116,8 @@ class _drawerfuncState extends State<drawerfunc> {
             listtilefunc('Settings', Icons.settings, ontap: () {
               SystemNavigator.pop();
             }),
-            listtilefunc('Exit', Icons.exit_to_app_rounded, ontap: () {
-              SystemNavigator.pop();
+            listtilefunc('Exit', Icons.home, ontap: () {
+              Navigator.pop(context);
             }),
           ],
         ),
