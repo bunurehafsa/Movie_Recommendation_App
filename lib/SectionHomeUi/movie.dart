@@ -14,32 +14,16 @@ class Movie extends StatefulWidget {
 
 class _MovieState extends State<Movie> {
   List<Map<String, dynamic>> popularmovies = [];
-  //List<Map<String, dynamic>> nowplayingmovies = [];
+  List<Map<String, dynamic>> nowplayingmovies = [];
 
   List<Map<String, dynamic>> topratedmovies = [];
   List<Map<String, dynamic>> latestmovies = [];
 
   Future<void> moviesfunction() async {
-    //using dotenv package for api key
-    // var popularmoviesurl =
-    //     'https://api.themoviedb.org/3/movie/popular?api_key=${dotenv.env['apikey']}';
-    // var nowplayingmoviesurl =
-    //     'https://api.themoviedb.org/3/movie/now_playing?api_key=${dotenv.env['apikey']}';
-    // var topratedmoviesurl =
-    //     'https://api.themoviedb.org/3/movie/top_rated?api_key=${dotenv.env['apikey']}';
-    // var latestmoviesurl =
-    //     'https://api.themoviedb.org/3/movie/latest?api_key=${dotenv.env['apikey']}';
-    /////////////////////////////////
-    ///
-    ///
-    ///using api key.dart file
-    ///
-    ///
-    ///
     var popularmoviesurl =
         'https://api.themoviedb.org/3/movie/popular?api_key=${api_key}';
-    //var nowplayingmoviesurl =
-    //'https://api.themoviedb.org/3/movie/now_playing?api_key=${api_key}';
+    var nowplayingmoviesurl =
+        'https://api.themoviedb.org/3/movie/now_playing?api_key=${api_key}';
     var topratedmoviesurl =
         'https://api.themoviedb.org/3/movie/top_rated?api_key=${api_key}';
     var popularmoviesresponse = await http.get(Uri.parse(popularmoviesurl));
@@ -59,23 +43,23 @@ class _MovieState extends State<Movie> {
       print(popularmoviesresponse.statusCode);
     }
     /////////////////////////////////////////////
-    // var nowplayingmoviesresponse =
-    //     await http.get(Uri.parse(nowplayingmoviesurl));
-    // if (nowplayingmoviesresponse.statusCode == 200) {
-    //   var tempdata = jsonDecode(nowplayingmoviesresponse.body);
-    //   var nowplayingmoviesjson = tempdata['results'];
-    //   for (var i = 0; i < nowplayingmoviesjson.length; i++) {
-    //     nowplayingmovies.add({
-    //       "name": nowplayingmoviesjson[i]["title"],
-    //       "poster_path": nowplayingmoviesjson[i]["poster_path"],
-    //       "vote_average": nowplayingmoviesjson[i]["vote_average"],
-    //       "Date": nowplayingmoviesjson[i]["release_date"],
-    //       "id": nowplayingmoviesjson[i]["id"],
-    //     });
-    //   }
-    // } else {
-    //   print(nowplayingmoviesresponse.statusCode);
-    // }
+    var nowplayingmoviesresponse =
+        await http.get(Uri.parse(nowplayingmoviesurl));
+    if (nowplayingmoviesresponse.statusCode == 200) {
+      var tempdata = jsonDecode(nowplayingmoviesresponse.body);
+      var nowplayingmoviesjson = tempdata['results'];
+      for (var i = 0; i < nowplayingmoviesjson.length; i++) {
+        nowplayingmovies.add({
+          "name": nowplayingmoviesjson[i]["title"],
+          "poster_path": nowplayingmoviesjson[i]["poster_path"],
+          "vote_average": nowplayingmoviesjson[i]["vote_average"],
+          "Date": nowplayingmoviesjson[i]["release_date"],
+          "id": nowplayingmoviesjson[i]["id"],
+        });
+      }
+    } else {
+      print(nowplayingmoviesresponse.statusCode);
+    }
     /////////////////////////////////////////////
     var topratedmoviesresponse = await http.get(Uri.parse(topratedmoviesurl));
     if (topratedmoviesresponse.statusCode == 200) {
@@ -114,7 +98,7 @@ class _MovieState extends State<Movie> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   sliderlist(popularmovies, "Popular Now", "movie", 20),
-                  // sliderlist(nowplayingmovies, "Now Playing", "movie", 20),
+                  sliderlist(nowplayingmovies, "Now Playing", "movie", 20),
                   sliderlist(topratedmovies, "Top Rated", "movie", 20)
                 ]);
           }
