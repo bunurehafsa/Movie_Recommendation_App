@@ -113,11 +113,92 @@ class _drawerfuncState extends State<drawerfunc> {
                     );
                   });
             }),
+            // ← Keep everything above exactly as it is (DrawerHeader, Home, Favorite, About, Exit, etc.)
+
             listtilefunc('Settings', Icons.settings, ontap: () {
-              SystemNavigator.pop();
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  backgroundColor: const Color.fromRGBO(18, 18, 18, 0.9),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  title: const Text(
+                    'Settings',
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 248, 248, 247),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                    ),
+                  ),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Divider(color: Colors.white24),
+
+                      // 1. App Info / Version
+                      ListTile(
+                        leading: const Icon(Icons.info_outline,
+                            color: Colors.white70),
+                        title: const Text('About App',
+                            style: TextStyle(color: Colors.white)),
+                        onTap: () {
+                          Navigator.pop(context);
+                          showAboutDialog(
+                            context: context,
+                            applicationName: "MovieLens",
+                            applicationVersion: "1.0.0",
+                            applicationIcon:
+                                Image.asset('assets/icon.png', width: 60),
+                            children: const [
+                              Padding(
+                                padding: EdgeInsets.only(top: 16),
+                                child: Text(
+                                  "Made by Nure Hafsa Shefa\n"
+                                  "Powered by TMDB API\n"
+                                  "Enjoy movies & series!",
+                                  style: TextStyle(
+                                      color: Color.fromARGB(179, 14, 0, 0)),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                      const Divider(color: Colors.white24),
+
+                      // 2. Rate App (optional)
+                      ListTile(
+                        leading:
+                            const Icon(Icons.star_rate, color: Colors.amber),
+                        title: const Text('Rate This App',
+                            style: TextStyle(color: Colors.white)),
+                        onTap: () {
+                          Navigator.pop(context);
+                          Fluttertoast.showToast(
+                            msg: "Thank you for your support!",
+                            backgroundColor: Colors.purple,
+                            textColor: Colors.white,
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Close',
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 245, 245, 244))),
+                    ),
+                  ],
+                ),
+              );
             }),
-            listtilefunc('Exit', Icons.home, ontap: () {
-              Navigator.pop(context);
+
+            listtilefunc('Exit', Icons.exit_to_app, ontap: () {
+              SystemNavigator.pop();
             }),
           ],
         ),
