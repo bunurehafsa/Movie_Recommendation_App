@@ -244,6 +244,14 @@ class _TvSeriesDetailsState extends State<TvSeriesDetails> {
                         type: 'tv',
                         Details: TvSeriesDetails,
                       ),
+
+                      Padding(
+                        padding: EdgeInsets.only(left: 20, top: 10),
+                        child: tittletext(
+                          TvSeriesDetails[0]['title'].toString(),
+                        ),
+                      ),
+
                       Row(children: [
                         Container(
                             padding: EdgeInsets.only(left: 10, top: 10),

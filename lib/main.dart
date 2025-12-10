@@ -8,7 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 // The Main Entry Point
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
+  await dotenv.load(fileName: "assets/.env");
   SharedPreferences sp = await SharedPreferences.getInstance();
   String imagepath = sp.getString('imagepath') ?? '';
   runApp(MyApp(imagepath: imagepath));

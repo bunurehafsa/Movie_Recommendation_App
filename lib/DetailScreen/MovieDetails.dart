@@ -220,6 +220,12 @@ class _MovieDetailsState extends State<MovieDetails> {
                       type: 'movie',
                       Details: MovieDetails,
                     ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 20, top: 10),
+                      child: tittletext(
+                        MovieDetails[0]['title'].toString(),
+                      ),
+                    ),
 
                     Column(
                       children: [
@@ -267,6 +273,7 @@ class _MovieDetailsState extends State<MovieDetails> {
                         ),
                       ],
                     ),
+
                     Padding(
                       padding: EdgeInsets.only(left: 20, top: 10),
                       child: tittletext('Movie Story :'),

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class trailerwatch extends StatefulWidget {
-  var trailerytid;
-  trailerwatch({super.key, this.trailerytid});
+  final String trailerytid;
+  const trailerwatch({super.key, required this.trailerytid});
 
   @override
   State<trailerwatch> createState() => _trailerwatchState();
@@ -11,54 +11,80 @@ class trailerwatch extends StatefulWidget {
 
 class _trailerwatchState extends State<trailerwatch> {
   late YoutubePlayerController _controller;
+  bool _isPlayerReady = false;
 
   @override
   void initState() {
-    final videoid = YoutubePlayer.convertUrlToId(widget.trailerytid);
+    super.initState();
+    final videoId =
+        YoutubePlayer.convertUrlToId(widget.trailerytid) ?? widget.trailerytid;
+
     _controller = YoutubePlayerController(
-      initialVideoId: videoid.toString(),
-      flags: YoutubePlayerFlags(
-        enableCaption: true,
+      initialVideoId: videoId,
+      flags: const YoutubePlayerFlags(
         autoPlay: false,
         mute: false,
-        // controlsVisibleAtStart: true,
-        forceHD: true,
+        disableDragSeek: false,
+        loop: false,
+        isLive: false,
+        forceHD: false,
+        enableCaption: true,
       ),
-    );
+    )..addListener(listener);
+  }
+
+  void listener() {
+    if (mounted && !_isPlayerReady) {
+      setState(() {
+        _isPlayerReady = true;
+      });
+    }
+  }
+
+  @override
+  void deactivate() {
+    _controller.pause();
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(0.0),
-      child: YoutubePlayer(
-        thumbnail: Image.network(
-          "https://img.youtube.com/vi/" + widget.trailerytid + "/hqdefault.jpg",
-          fit: BoxFit.cover,
-        ),
-        controlsTimeOut: Duration(milliseconds: 1500),
-        aspectRatio: 16 / 9,
+    return YoutubePlayerBuilder(
+      player: YoutubePlayer(
         controller: _controller,
         showVideoProgressIndicator: true,
-        bufferIndicator: const Center(
-          child: Center(
-              child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
-          )),
-        ),
         progressIndicatorColor: Colors.amber,
+        progressColors: const ProgressBarColors(
+          playedColor: Colors.amber,
+          handleColor: Colors.amberAccent,
+          bufferedColor: Colors.grey,
+          backgroundColor: Colors.black54,
+        ),
+        onReady: () {},
         bottomActions: [
           CurrentPosition(),
-          ProgressBar(
-              isExpanded: true,
-              colors: ProgressBarColors(
-                playedColor: Colors.white,
-                handleColor: Colors.amber,
-              )),
+          ProgressBar(isExpanded: true),
           RemainingDuration(),
-          FullScreenButton(),
+          const PlaybackSpeedButton(),
         ],
       ),
+      builder: (context, player) {
+        return Column(
+          children: [
+            player,
+            if (!_isPlayerReady)
+              const Center(
+                child: CircularProgressIndicator(color: Colors.amber),
+              ),
+          ],
+        );
+      },
     );
   }
 }
